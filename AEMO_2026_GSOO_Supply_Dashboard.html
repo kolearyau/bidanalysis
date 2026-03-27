@@ -397,11 +397,11 @@ function renderFacilitySheet(sheetName) {
 
   // Choose key columns to show
   const keyColMap = {
-    'Pipelines': ['Name','Status','Location','Ownership','Operator','First Gas Flow','Length (km)','Maximum Capacity (TJ per day)','Regulations','Expansion Plans'],
-    'Processing': ['Name','Status','Location','Ownership','Operator','Basin','First Production','Maximum Capacity (TJ per day)','Technology','Expansion Plans'],
-    'Storage': ['Name','Status','Location','Ownership','Operator','First Storage','Working Capacity (PJ)','Maximum Injection Rate (TJ per day)','Maximum Withdrawal Rate (TJ per day)'],
-    'LNG Export': ['Name','Acronym','Status','Location','Ownership','Online','Gas Source','Trains','Production Capacity (Mtpa)','Expansions'],
-    'Field Developments': ['Name','Status','Location','Ownership','Operator','Basin','First Production','2P Reserves (PJ)','2C Resources (PJ)','Description'],
+    'Pipelines': ['Name','Status','Location','Ownership','Operator','First Gas Flow','Start Node','End Node','Length (km)','Maximum Capacity (TJ per day)','Regulations','Expansion Plans'],
+    'Processing': ['Name','Status','Location','Ownership','Operator','Basin','First Production','Type of Gas Processed','Capacity (TJ/day)','Gas Field Connections','Pipeline Connections','Expansions'],
+    'Storage': ['Name','Status','Location','Ownership','Operator','Field','First Storage','Storage Capacity (PJ)','Injection Rate into Storage (TJ/day)','Withdrawal Rate from Storage (TJ/day)','Expansions'],
+    'LNG Export': ['Name','Acronym','Status','Location','Ownership','Online','Gas Source','Gas Field','Trains','Production Capacity (Mtpa)','Expansions'],
+    'Field Developments': ['Name','Status','Location','Ownership','Operator','Basin','First Production','Gas Source','Production Capacity (TJ per day unless otherwise specified)','Production Facility','Market','Pipeline Connection','Expansion Plans'],
   };
 
   const showCols = (keyColMap[sheetName] || sheet.headers).filter(h => sheet.headers.includes(h));
@@ -414,7 +414,9 @@ function renderFacilitySheet(sheetName) {
       if (h === 'Name') return `<td class="name">${v || '-'}</td>`;
       if (h === 'Description') return `<td class="desc">${v.substring(0, 120)}${v.length > 120 ? '…' : ''}</td>`;
       if (h === 'Ownership') return `<td class="ownership tip" data-tip="${v.replace(/"/g, '&quot;')}">${v.substring(0, 60)}${v.length > 60 ? '…' : ''}</td>`;
-      if (h === 'Expansion Plans') return `<td class="desc">${v.substring(0, 80)}${v.length > 80 ? '…' : ''}</td>`;
+      if (h === 'Expansion Plans' || h === 'Expansions') return `<td class="desc">${v.substring(0, 100)}${v.length > 100 ? '…' : ''}</td>`;
+      if (h === 'Gas Field Connections' || h === 'Pipeline Connections' || h === 'Pipeline Connection') return `<td class="desc" style="font-size:11px">${v.substring(0, 100)}${v.length > 100 ? '…' : ''}</td>`;
+      if (['Length (km)','Maximum Capacity (TJ per day)','Capacity (TJ/day)','Storage Capacity (PJ)','Injection Rate into Storage (TJ/day)','Withdrawal Rate from Storage (TJ/day)','Production Capacity (Mtpa)','Production Capacity (TJ per day unless otherwise specified)','Trains'].includes(h)) return `<td style="text-align:right;font-weight:600;color:var(--accent2)">${v || '–'}</td>`;
       return `<td>${v || '-'}</td>`;
     }).join('');
     return `<tr>${cells}</tr>`;
